@@ -1,2 +1,7 @@
 .ippcode20
 WRITE string@565
+WRITE bool@false
+WRITE int@-6548
+DPRINT string@\035\035\035\035\035
+LT GF@ahoj GF@ahoj int@8
+CREATEFRAME

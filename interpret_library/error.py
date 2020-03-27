@@ -4,9 +4,12 @@
 
 import sys
 
-def printErr(s_string) :
+def printStderr(error_string: str) :
+    sys.stderr.write(error_string)
+
+def printErr(s_string: str) :
     sys.stderr.write(s_string + '\n')
 
-def printErrAndExit(s_string, exit_code) :
+def printErrAndExit(s_string: str, exit_code: int) :
     sys.stderr.write(s_string + '\n')
     exit(exit_code)
