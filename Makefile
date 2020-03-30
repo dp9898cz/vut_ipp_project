@@ -12,3 +12,6 @@ bad_args_2:
 
 input:
 	python3.8 interpret.py --input=input/input/input.out
+
+test:
+	php7.4 test.php --directory=tests/opcode/

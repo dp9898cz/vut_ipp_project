@@ -20,16 +20,18 @@ class Instruction():
             self.arg3 = {'type': arg3.attrib['type'], 'data': arg3.text}
             self.argsCount += 1
 
-    def splitVar(self, variable) -> (str, str) :
+    @staticmethod
+    def splitVar(variable) -> (str, str) :
         return variable['data'].split('@', 1)
 
-    def getArgTypeAndData(self, argument) -> (str, str):
+
+    def getArgTypeAndData(self, argument, frameClassObj) -> (str, str):
         if argument['type'] in ['int', 'bool', 'string', 'type', 'label', 'nil'] :
             return(argument['type'], argument['data'])
         else :
             #zpracovavame promennou -> podivat se na stav ramcu
             frame, data = self.splitVar(argument)
-            frameObj = Frame.getFrame(frame)
+            frameObj = frameClassObj.getFrame(frame)
             if frameObj is None :
                 printErrAndExit('Pokus o cteni promenne z nedefinovaneho ramce.', 55)
             if data not in frameObj :

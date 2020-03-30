@@ -1,7 +1,17 @@
 .ippcode20
 WRITE string@565
 WRITE bool@false
+DEFVAR GF@ahoj
 WRITE int@-6548
+CREATEFRAME
+DEFVAR TF@ahojs
+PUSHFRAME
+POPFRAME
+PUSHS bool@false
+POPS GF@ahoj
 DPRINT string@\035\035\035\035\035
-LT GF@ahoj GF@ahoj int@8
+OR GF@ahoj bool@true GF@ahoj
+WRITE GF@ahoj
+NOT GF@ahoj GF@ahoj
+WRITE GF@ahoj
 CREATEFRAME
