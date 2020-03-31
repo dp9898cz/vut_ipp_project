@@ -20,10 +20,8 @@ class XMLparser():
         self.checkInstructions()
 
     def checkTreeIntegrity(self):
-        printErr('Kontrola integrity XML.')
         try:
             if self.XMLpath == 'sys.stdin' :
-                printErr('Cteni XML ze stdin.')
                 myTree = elmTree.parse(sys.stdin)
             else :
                 myTree = elmTree.parse(self.XMLpath)
@@ -38,7 +36,6 @@ class XMLparser():
             printErrAndExit('Nebylo mozne ziskat koren XML souboru.', 31)
 
     def checkRoot(self) :
-        printErr('Kontrola integrity XML - root.')
         if self.root.tag != 'program' :
             printErrAndExit('XML kořen nemá název program.', 31)
         for atribute in self.root.attrib :
@@ -50,7 +47,6 @@ class XMLparser():
             printErrAndExit('Atribut language u korenoveho elementu musi byt ippcode20.', 31)
 
     def checkInstructions(self) :
-        printErr('Kontrola instrukci.')
         order_tmp = 0
         for instruction in self.root :
             if instruction.tag != 'instruction':
@@ -80,7 +76,6 @@ class XMLparser():
 
 
     def importInstructions(self, instrList: InstructionList):
-        printErr('Import instrukci do listu.')
         for instruction in self.root:
             if instruction.attrib['opcode'] in ['CREATEFRAME', 'PUSHFRAME', 'POPFRAME', 'BREAK', 'RETURN'] :
                 self.checkNumOfArg(instruction, 0)

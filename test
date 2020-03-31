@@ -1,17 +1,7 @@
-.ippcode20
-WRITE string@565
-WRITE bool@false
-DEFVAR GF@ahoj
-WRITE int@-6548
-CREATEFRAME
-DEFVAR TF@ahojs
-PUSHFRAME
-POPFRAME
-PUSHS bool@false
-POPS GF@ahoj
-DPRINT string@\035\035\035\035\035
-OR GF@ahoj bool@true GF@ahoj
-WRITE GF@ahoj
-NOT GF@ahoj GF@ahoj
-WRITE GF@ahoj
-CREATEFRAME
+.IPPcode20
+
+DEFVAR GF@a
+
+CONCAT GF@a string@ string@
+
+WRITE GF@a

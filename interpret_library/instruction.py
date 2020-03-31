@@ -37,6 +37,8 @@ class Instruction():
             if data not in frameObj :
                 printErrAndExit('Pokus o cteni nedefinovane promenne v existujicim ramci.', 54)
             else :
+                if (frameObj[data]['type'] is None or frameObj[data]['data'] is None) :
+                    printErrAndExit('Pokus o cteni nedefinovane promenne. (nebyla definovana)', 56)
                 return(frameObj[data]['type'], frameObj[data]['data'])
 
 

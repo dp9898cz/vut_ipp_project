@@ -26,12 +26,10 @@ class ArgsChecker:
             elif argument.startswith('--source='):
                 #vstupní soubor s XML reprezentací zdrojového kódu
                 self.sourceXML = argument[9:]
-                printErr('Zjistena cesta k XML souboru: ' + argument[9:])
 
             elif argument.startswith('--input='):
                 #soubor se vstupy pro samotnou interpretaci zadaného zdrojového kódu
                 self.sourceInput = argument[8:]
-                printErr('Zjistena cesta k input souboru: ' + argument[8:])
 
             else :
                 print(argument)

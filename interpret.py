@@ -26,6 +26,7 @@ def Main() :
     parser.importInstructions(instructionList)
 
     #start interpreting
+    
     while True :
         instruction = instructionList.getNextInstruction()
         if (instruction == None) :
@@ -139,7 +140,7 @@ def Main() :
                 else :
                     frame.setVar(instruction.arg1, 'bool', 'true' if data1 == 'true' or data2 == 'true' else 'false')
             else :
-                printErrAndExit('Nelze provadet and nebo or s typy' + type1 + ' a ' + type2 + '.', 53)
+                printErrAndExit('Nelze provadet and nebo or s typy ' + type1 + ' a ' + type2 + '.', 53)
 
         elif instruction.type == 'NOT' :
             type1, data1 = instruction.getArgTypeAndData(instruction.arg2, frame)
@@ -212,6 +213,8 @@ def Main() :
             type2, data2 = instruction.getArgTypeAndData(instruction.arg3, frame)
 
             if type1 == type2 == 'string' :
+                data1 = '' if data1 is None else data1
+                data2 = '' if data2 is None else data2
                 frame.setVar(instruction.arg1, 'string', data1 + data2)
             else :
                 printErrAndExit('Neni mozne provest konkatenaci retezcu.', 53) 
@@ -254,6 +257,47 @@ def Main() :
                     frame.setVar(instruction.arg1, 'string', dataV)
             else :
                 printErrAndExit('Nebylo mozne provest operaci setchar (spatne operandy)', 53)
+
+        elif instruction.type == 'TYPE' :
+            type1, data1 = instruction.getArgTypeAndData(instruction.arg2, frame)
+            if type1 is None :
+                type1 = ''
+            frame.setVar(instruction.arg1, 'string', type1)
+        
+        elif instruction.type == 'LABEL' :
+            continue
+        
+        elif instruction.type in ['JUMPIFEQ', 'JUMPIFNEQ'] :
+            type1, data1 = instruction.getArgTypeAndData(instruction.arg2, frame)
+            type2, data2 = instruction.getArgTypeAndData(instruction.arg3, frame)
+
+            if type1 == type2 :
+                if instruction.type == 'JUMPIFEQ' and data1 == data2 :
+                    instructionList.jump(instruction.arg1)
+                elif instruction.type == 'JUMPIFNEQ' and data1 != data2 :
+                    instructionList.jump(instruction.arg1)
+                else :
+                    pass
+            else :
+                printErrAndExit('Argumenty instrukce JUMPIFEQ nejsou stejneho typu.', 53)
+        
+        elif instruction.type == 'JUMP' :
+            instructionList.jump(instruction.arg1)
+        
+        elif instruction.type == 'EXIT' :
+            type1, data1 = instruction.getArgTypeAndData(instruction.arg1, frame)
+
+            if type1 != 'int' :
+                printErrAndExit('Chybny typ argumentu v instrukci exit.', 53)
+            else :
+                number = int(data1)
+                if number < 0 or number > 49 :
+                    printErrAndExit('Chybny ciselna hodnota v argumentu instrukce exit.', 57)
+                else :
+                    printErrAndExit('', number)
+            
+
+
 
         
 
