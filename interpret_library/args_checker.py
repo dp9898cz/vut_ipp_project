@@ -32,7 +32,6 @@ class ArgsChecker:
                 self.sourceInput = argument[8:]
 
             else :
-                print(argument)
                 printErrAndExit('Byl zadan chybny argument: ' + argument, 10)
     
     def getXMLPath(self):

@@ -77,21 +77,21 @@ class XMLparser():
 
     def importInstructions(self, instrList: InstructionList):
         for instruction in self.root:
-            if instruction.attrib['opcode'] in ['CREATEFRAME', 'PUSHFRAME', 'POPFRAME', 'BREAK', 'RETURN'] :
+            if instruction.attrib['opcode'].upper() in ['CREATEFRAME', 'PUSHFRAME', 'POPFRAME', 'BREAK', 'RETURN'] :
                 self.checkNumOfArg(instruction, 0)
-                i = Instruction(instruction.attrib['opcode']) 
+                i = Instruction(instruction.attrib['opcode'].upper()) 
                 instrList.insertInstruction(i)
-            elif instruction.attrib['opcode'] in ['DPRINT', 'DEFVAR', 'CALL', 'PUSHS', 'POPS', 'LABEL', 'JUMP', 'WRITE', 'EXIT'] :
+            elif instruction.attrib['opcode'].upper() in ['DPRINT', 'DEFVAR', 'CALL', 'PUSHS', 'POPS', 'LABEL', 'JUMP', 'WRITE', 'EXIT'] :
                 self.checkNumOfArg(instruction, 1)
-                i = Instruction(instruction.attrib['opcode'], instruction[0]) 
+                i = Instruction(instruction.attrib['opcode'].upper(), instruction[0]) 
                 instrList.insertInstruction(i)
-            elif instruction.attrib['opcode'] in ['MOVE', 'INT2CHAR', 'READ', 'STRLEN', 'TYPE', 'NOT'] :
+            elif instruction.attrib['opcode'].upper() in ['MOVE', 'INT2CHAR', 'READ', 'STRLEN', 'TYPE', 'NOT'] :
                 self.checkNumOfArg(instruction, 2)
-                i = Instruction(instruction.attrib['opcode'], instruction[0], instruction[1]) 
+                i = Instruction(instruction.attrib['opcode'].upper(), instruction[0], instruction[1]) 
                 instrList.insertInstruction(i)
-            elif instruction.attrib['opcode'] in ['ADD', 'SUB', 'MUL', 'IDIV', 'LT', 'GT', 'EQ', 'AND', 'OR', 'JUMPIFEQ', 'JUMPIFNEQ', 'STR2INT', 'CONCAT', 'GETCHAR', 'SETCHAR'] :
+            elif instruction.attrib['opcode'].upper() in ['ADD', 'SUB', 'MUL', 'IDIV', 'LT', 'GT', 'EQ', 'AND', 'OR', 'JUMPIFEQ', 'JUMPIFNEQ', 'STRI2INT', 'CONCAT', 'GETCHAR', 'SETCHAR'] :
                 self.checkNumOfArg(instruction, 3)
-                i = Instruction(instruction.attrib['opcode'], instruction[0], instruction[1], instruction[2]) 
+                i = Instruction(instruction.attrib['opcode'].upper(), instruction[0], instruction[1], instruction[2]) 
                 instrList.insertInstruction(i)
             else :
                 printErrAndExit('Neocekavana chyba programu.', 32)

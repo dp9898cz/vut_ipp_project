@@ -23,12 +23,40 @@ foreach ($scanner->folders as $folder) {
         $output = $folder.$file['name'].'.out';
 
         //TODO parse only, int only
+        //INT ONLY OPTION
+        if ($arg_checker->int_only) {
+            unset($int_out);
+            unset($int_retval);
+            exec("python3.8 " . $arg_checker->interpret . " --source=" . $source . " --input=" . $input , $int_out, $int_retval);
+            if (($int_retval == 0) && ($int_retval == file_get_contents($return))) {
+                //interpretation complted, now we have to compare the output
+                unset($diff_retval);
+                exec("python3.8 " . $arg_checker->interpret . " --source=" . $source . " --input=". $input . " 2>/dev/null | diff " . $output . " -", $diff_out, $diff_retval);
+                if ($diff_retval == 0) {
+                    $scanner->save_test_output($folder, $file['name'], '', $int_retval, true);
+                }
+                else {
+                    $scanner->save_test_output($folder, $file['name'], '', $int_retval, false);
+                    $failed_tests++;
+                }
+            }
+            elseif (($int_retval != 0) && ($int_retval == file_get_contents($return))) {
+                //interpretation failed but it was intended
+                $scanner->save_test_output($folder, $file['name'], '', $int_retval, true);
+            }
+            else {
+                //not completed test
+                $scanner->save_test_output($folder, $file['name'], '', $int_retval, false);
+                $failed_tests++;
+            }
+        }
+        else {
 
         unset($parse_out);
         unset($parse_retval);
         exec("php7.4 " . $arg_checker->parse . " < " . $source , $parse_out, $parse_retval);
         
-        if ($parse_retval == 0) {
+        if ($parse_retval == 0 && !$arg_checker->parse_only) {
             unset($int_out);
             unset($int_retval);
             exec("php7.4 " . $arg_checker->parse . " < " . $source . " 2>/dev/null | python3.8 " . $arg_checker->interpret . " --input=" . $input , $int_out, $int_retval);
@@ -66,6 +94,7 @@ foreach ($scanner->folders as $folder) {
             }
             
         }
+    }
     }
 }
 

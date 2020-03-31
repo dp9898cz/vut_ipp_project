@@ -1,7 +1,8 @@
 .IPPcode20
 
 DEFVAR GF@a
+DEFVAR GF@b
 
-CONCAT GF@a string@ string@
+TYPE GF@a GF@b
 
 WRITE GF@a

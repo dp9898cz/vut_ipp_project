@@ -25,7 +25,11 @@ def Main() :
     #import instructions to the instruction list
     parser.importInstructions(instructionList)
 
+    #check strings and replace \ sign
+    instructionList.checkStrings()
+
     #start interpreting
+    lineCounter = 0
     
     while True :
         instruction = instructionList.getNextInstruction()
@@ -41,10 +45,10 @@ def Main() :
             else :
                 if (aType == 'nil' and aData == 'nil') :
                     aData = ''
-                index: int = aData.find('\\')
-                while(index != -1) :
-                    aData = aData.replace(aData[index:index+4], chr(int(aData[index+1:index+4])))
-                    index = aData.find('\\', index + 1)
+
+                #aData = instructionList.fixString(aData)
+                #print('adata_: ', aData)
+
                 if instruction.type == 'WRITE' :
                     print(aData, end='')
                 else:
@@ -70,7 +74,10 @@ def Main() :
             dataStack.append((typee, data))
         
         elif instruction.type == 'POPS' :
-            typee, data = dataStack.pop()
+            try:
+                typee, data = dataStack.pop()
+            except IndexError :
+                printErrAndExit('Instrukce POPS: prazdny datastack.', 56)
             frame.setVar(instruction.arg1, typee, data)
 
         elif instruction.type == 'MOVE' :
@@ -90,9 +97,9 @@ def Main() :
             if type1 == type2 == 'int' :
                 if instruction.type == 'ADD':
                     frame.setVar(instruction.arg1, 'int', str(int(data1)+int(data2)))
-                elif instruction.data == 'SUB':
+                elif instruction.type == 'SUB':
                     frame.setVar(instruction.arg1, 'int', str(int(data1) - int(data2)))
-                elif instruction.data == 'MUL':
+                elif instruction.type == 'MUL':
                     frame.setVar(instruction.arg1, 'int', str(int(data1) * int(data2)))
                 else:
                     if int(data2) == 0:
@@ -109,6 +116,8 @@ def Main() :
             if type1 == type2 :
                 if instruction.type == 'EQ' :
                     frame.setVar(instruction.arg1, 'bool', 'true' if data1 == data2 else 'false')
+                elif (instruction.type in ['GT', 'LT'] and (type1 == 'nil' and type2 == 'nil')) :
+                    printErrAndExit('Nelze porovnat typy ' + type1 + ' a ' + type2 + ' v instrukci LT nebo GT.', 53)
                 elif instruction.type == 'LT' :
                     if type1 == 'string' :
                         frame.setVar(instruction.arg1, 'bool', 'true' if data1 < data2 else 'false')
@@ -127,8 +136,11 @@ def Main() :
                         frame.setVar(instruction.arg1, 'bool', 'true' if data1 == 'true' and data2 == 'false' else 'false')
                     else :
                         frame.setVar(instruction.arg1, 'bool', 'true' if int(data1) > int(data2) else 'false')
+
+            elif instruction.type == 'EQ' and (type1 == 'nil' or type2 == 'nil') :
+                frame.setVar(instruction.arg1, 'bool', 'false')
             else :
-                printErrAndExit('Nelze porovnat typy' + type1 + ' a ' + type2 + '.', 53)
+                printErrAndExit('Nelze porovnat typy ' + type1 + ' a ' + type2 + '.', 53)
 
         elif instruction.type in ['AND', 'OR'] :
             type1, data1 = instruction.getArgTypeAndData(instruction.arg2, frame)
@@ -180,9 +192,19 @@ def Main() :
             if len(argsChecker.getInputPath()) :
                 try :
                     with open(argsChecker.getInputPath()) as file :
-                        userInput = file.readline()
-                except Exception :
+                        uis = file.read().splitlines()
+                        #print(uis)
+                except FileNotFoundError :
                     printErrAndExit('Nebylo mozne otevrit a precist input ze souboru.', 11)
+                
+                try:
+                    userInput = uis[lineCounter]
+                except IndexError:
+                    printErr('Chybejici udaj do promenne.')
+                    frame.setVar(instruction.arg1, 'nil', '')
+                    continue
+                finally :
+                    lineCounter += 1
             else :
                 try :
                     userInput = input()
@@ -191,10 +213,10 @@ def Main() :
             
             if data1 == 'int' :
                 try:
-                    number = int(userInput)
+                    number = str(int(userInput))
                 except :
                     printErr('Byl zadan chybny udaj do promenne typu int.')
-                    frame.setVar(instruction.arg1, 'nil', 'nil')
+                    frame.setVar(instruction.arg1, 'nil', '')
                 else :
                     frame.setVar(instruction.arg1, 'int', number)
             elif data1 == 'bool' :
@@ -204,7 +226,7 @@ def Main() :
                     frame.setVar(instruction.arg1, 'bool', 'false')
                 else :
                     printErr('Byl zadan chybny udaj do promenne typu bool.')
-                    frame.setVar(instruction.arg1, 'nil', 'nil')
+                    frame.setVar(instruction.arg1, 'bool', 'false')
             else :
                 frame.setVar(instruction.arg1, 'string', userInput)
         
@@ -246,20 +268,22 @@ def Main() :
             dataV: str
             typeV, dataV = instruction.getArgTypeAndData(instruction.arg1, frame)
 
-            if type1 == 'string' and type2 == 'int' and typeV == 'string':
-                number = int(data2)
-                if number < 0 and number >= len(data1) :
+            if type1 == 'int' and type2 == 'string' and typeV == 'string':
+                number = int(data1)
+                if number < 0 or number >= len(dataV) or dataV == '' :
                     printErrAndExit('Indexace mimo retezec u instrukce SETCHAR.', 58)
                 if data2 == '' :
                     printErrAndExit('Prazdny retezec - chyba u instrukce SETCHAR.', 58)
                 else :
-                    dataV[number] = data2[0]
+                    data_list = list(dataV)
+                    data_list[number] = data2[0]
+                    dataV = "".join(data_list)
                     frame.setVar(instruction.arg1, 'string', dataV)
             else :
                 printErrAndExit('Nebylo mozne provest operaci setchar (spatne operandy)', 53)
 
         elif instruction.type == 'TYPE' :
-            type1, data1 = instruction.getArgTypeAndData(instruction.arg2, frame)
+            type1 = instruction.getType(instruction.arg2, frame)
             if type1 is None :
                 type1 = ''
             frame.setVar(instruction.arg1, 'string', type1)
@@ -271,7 +295,9 @@ def Main() :
             type1, data1 = instruction.getArgTypeAndData(instruction.arg2, frame)
             type2, data2 = instruction.getArgTypeAndData(instruction.arg3, frame)
 
-            if type1 == type2 :
+            instructionList.checkLabel(instruction.arg1)
+
+            if (type1 == type2 or type1 == 'nil' or type2 == 'nil') :
                 if instruction.type == 'JUMPIFEQ' and data1 == data2 :
                     instructionList.jump(instruction.arg1)
                 elif instruction.type == 'JUMPIFNEQ' and data1 != data2 :
