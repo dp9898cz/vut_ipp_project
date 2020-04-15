@@ -46,16 +46,13 @@ def Main() :
                 if (aType == 'nil' and aData == 'nil') :
                     aData = ''
 
-                #aData = instructionList.fixString(aData)
-                #print('adata_: ', aData)
-
                 if instruction.type == 'WRITE' :
                     print(aData, end='')
                 else:
                     printStderr(aData)
 
         elif instruction.type == 'BREAK' :
-            printStderr('Tady bude vypis.')     #TODO
+            pass
 
         elif instruction.type == 'CREATEFRAME' :
             frame.createFrame()

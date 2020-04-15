@@ -5,8 +5,10 @@ all:
 help:
 	python3.8 interpret.py --help
 parse_only:
-	php7.4 test.php --directory=tests/parse_only --recursive --jexamxml=test_library/jexamxml/jexamxml.jar --parse-only >index.html
+	php7.4 test.php --directory=tests/parse_only/basic --recursive --jexamxml=test_library/jexamxml/jexamxml.jar --parse-only >index.html
 int_only:
 	php7.4 test.php --directory=tests/int_only --recursive --jexamxml=test_library/jexamxml/jexamxml.jar --int-only >index.html
 test:
 	php7.4 test.php --directory=tests/both --recursive --jexamxml=test_library/jexamxml/jexamxml.jar >index.html
+zip:
+	zip -r xpatek08.zip interpret.py test.php readme2.md test_library interpret_library -i '*.php' '*.py' '*.md'

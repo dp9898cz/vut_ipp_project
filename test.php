@@ -85,8 +85,27 @@ foreach ($scanner->folders as $folder) {
         }
         else {
             //there was some error during parsing
+            //or we have to do after parse check
             if ($parse_retval == file_get_contents($return)) {
-                $scanner->save_test_output($folder, $file['name'], $parse_retval, '', true);
+                if ($arg_checker->parse_only) {
+                    $file_tmp = tmpfile();
+                    fwrite($file_tmp, implode("\n", $parse_out));
+                    if (count($parse_out) > 0)
+                        fwrite($file_tmp,"\n");
+                    unset($xml_retval);
+                    exec("java -jar " . $arg_checker->jexamxml . " " . $file_tmp . $output . " /dev/null", $xmloutput, $xml_retval);
+                    print($xml_retval);
+                    if ($xmloutput == 0) {
+                        $scanner->save_test_output($folder, $file['name'], $parse_retval, '', true);
+                    }
+                    else {
+                        $scanner->save_test_output($folder, $file['name'], $parse_retval, '', false);
+                    }
+                    fclose($file_tmp);
+                }
+                else {
+                    $scanner->save_test_output($folder, $file['name'], $parse_retval, '', true);
+                }
             }
             else {
                 $scanner->save_test_output($folder, $file['name'], $parse_retval, '', false);

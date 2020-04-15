@@ -6,3 +6,5 @@ DEFVAR GF@b
 TYPE GF@a GF@b
 
 WRITE GF@a
+
+BREAK
