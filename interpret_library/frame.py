@@ -50,8 +50,6 @@ class Frame :
             printErrAndExit('Pokus o zapis do neexistujici promenne.', 54)
         frameObj[name]['type'] = typee
         frameObj[name]['data'] = data
-        #print('type: ' + typee)
-        #print('data:   _' + data)
 
     def defVar(self, argument) :
         frame, name = i.Instruction.splitVar(argument)

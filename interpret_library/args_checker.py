@@ -16,6 +16,7 @@ class ArgsChecker:
         if len(sys.argv) > 3 or len(sys.argv) < 2 :
             printErrAndExit('Zadan spatny pocet argumentu.', 10)
 
+        #check types of arguments
         for argument in sys.argv[1:]:
             if argument == '--help' or argument == '-h':
                 print("Program načte XML reprezentaci programu a tento program s využitím vstupu dle parametrů příkazové řádky")

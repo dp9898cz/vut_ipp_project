@@ -1,4 +1,9 @@
 <?php
+
+// IPP 2020, VUT FIT
+// file: interpret.py
+// author: Daniel Patek (xpatek08)
+
 class ArgumentChecker {
     public $directory;
     public $run_recursively;

@@ -1,18 +1,25 @@
 <?php
 
+// IPP 2020, VUT FIT
+// file: interpret.py
+// author: Daniel Patek (xpatek08)
+
 require_once("./test_library/args_checker.php");
 require_once("./test_library/scanner.php");
 require_once("./test_library/html_generator.php");
 
+//check script arguments and set paths
 $arg_checker = new ArgumentChecker();
 $arg_checker->checkArgs();
 
+//scan test directory
 $scanner = new Scanner();
 $scanner->scan($arg_checker->directory, $arg_checker->run_recursively);
 
 $number_of_tests = 0;
 $failed_tests = 0;
 
+//run testing
 foreach ($scanner->folders as $folder) {
     foreach($scanner->files[$folder] as $file) {
         $number_of_tests++;
@@ -22,7 +29,6 @@ foreach ($scanner->folders as $folder) {
         $return = $folder.$file['name'].'.rc';
         $output = $folder.$file['name'].'.out';
 
-        //TODO parse only, int only
         //INT ONLY OPTION
         if ($arg_checker->int_only) {
             unset($int_out);

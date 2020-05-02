@@ -1,5 +1,9 @@
 <?php
 
+// IPP 2020, VUT FIT
+// file: interpret.py
+// author: Daniel Patek (xpatek08)
+
 class HTML_generator {
     public $scanner;
     public $total;

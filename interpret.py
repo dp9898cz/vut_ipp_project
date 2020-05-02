@@ -1,3 +1,7 @@
+#IPP 2020, VUT FIT
+#file: interpret.py
+#author: Daniel Patek (xpatek08)
+
 from interpret_library.args_checker import ArgsChecker
 from interpret_library.error import *
 from interpret_library.instruction_list import InstructionList
@@ -32,12 +36,14 @@ def Main() :
     lineCounter = 0
     
     while True :
+        #get next instruction
         instruction = instructionList.getNextInstruction()
+
+        #end of input 
         if (instruction == None) :
             break
 
-        #switch - every instruction 
-
+        #switch - every instruction controller
         if instruction.type == 'WRITE' or instruction.type == 'DPRINT':
             aType, aData = instruction.getArgTypeAndData(instruction.arg1, frame)
             if aData == None:
@@ -190,7 +196,6 @@ def Main() :
                 try :
                     with open(argsChecker.getInputPath()) as file :
                         uis = file.read().splitlines()
-                        #print(uis)
                 except FileNotFoundError :
                     printErrAndExit('Nebylo mozne otevrit a precist input ze souboru.', 11)
                 
